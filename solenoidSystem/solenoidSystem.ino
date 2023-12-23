@@ -18,6 +18,7 @@ int sole_in_pin = 3;
 int sole_out_pin = 4;
 
 int handle_pin = 0;
+int impactPower = 0;
 
 void setup() {
   metro.set(2500);
@@ -36,8 +37,14 @@ void setup() {
 
 void loop() {
   val = analogRead(5) ; //球が射出されてるか確認
+  impactPower = map(analogRead(handle_pin), 0, 443, 0, 255); //可変抵抗の値を２５５
   //Serial.println(val) ;
-  Serial.println(analogRead(handle_pin)) ;
+  Serial.print(analogRead(handle_pin)) ;
+  Serial.print("\t");
+  Serial.print(impactPower) ;
+  Serial.print("\t");
+  Serial.println(val) ;
+
 
   //Serial.println(flg);
   if (metro.update()) {
@@ -49,7 +56,7 @@ void loop() {
       digitalWrite(sole_out_pin, HIGH);
     }
     openTime++;
-    if (40 < openTime) {
+    if (7 < openTime) {
       //    if (inMetro.update()) {
       flg2 = true;
       flg = false;
@@ -65,15 +72,15 @@ void loop() {
   if (flg2) {
     impactTime++;
     //    if (impactMetro.update()) {
-    if (240 < impactTime) {
-      digitalWrite(impactPin, HIGH);
+    if (60 < impactTime) {
+      analogWrite(impactPin, 255);
     }
     //    if (impactMetro2.update()) {
-    if (250 < impactTime) {
+    if (70 < impactTime) {
       flg2 = false;
     }
   } else {
-    digitalWrite(impactPin, LOW);
+    analogWrite(impactPin, 0);
     impactTime = 0;
   }
 

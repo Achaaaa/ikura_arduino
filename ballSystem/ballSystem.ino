@@ -1,6 +1,7 @@
 #include "metro.h"
 #include "emitter.h"
 #include "Prize.h"
+#include "LED.h"
 #include <EEPROM.h>
 #include <ArduinoOSCWiFi.h>
 #include <WiFi.h>
@@ -8,9 +9,9 @@ const char* ssid = "HappyDream";
 const char* password = "yppahyrevmi";
 String host = "192.168.0.109";
 
-int PrizePin_0 = 32 ;
-int PrizePin_1 = 34;
-int PrizePin_2 = 35;
+int PrizePin_right = 32 ;
+int PrizePin_left = 34;
+int PrizePin_center = 35;
 
 int WinSignal;
 int WinSignal_prev;
@@ -21,17 +22,22 @@ bool isEmitting;
 int EmitCount;
 long EmitStamp;
 
-Prize prize0;
-Prize prize1;
-Prize prize2;
+int led_status = 1;
+
+Prize prize_right;
+Prize prize_left;
+Prize prize_center;
+
+LED led;
 
 void setup() {
   metro.set(2500);
   Serial.begin(19200);
+  led.set();
   int cnt = 0;
-  prize0.set(PrizePin_0);
-  prize1.set(PrizePin_1);
-  prize2.set(PrizePin_2);
+  prize_right.set(PrizePin_right,70);
+  prize_left.set(PrizePin_left,60);
+  prize_center.set(PrizePin_center,70);
   Serial.printf("Connecting to %s\n", ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -53,38 +59,47 @@ void setup() {
 }
 
 void loop() {
-  Serial.print(analogRead(PrizePin_0));
-  Serial.print("\t");  
-  Serial.print(analogRead(PrizePin_1));
+  Serial.print(analogRead(PrizePin_left));
   Serial.print("\t");   
-  Serial.print(analogRead(PrizePin_2));
-  Serial.println("\t");    
+  Serial.print(analogRead(PrizePin_center));
+  Serial.print("\t");  
+  Serial.print(analogRead(PrizePin_right));
+  Serial.print("\t");    
   if (WinSignal_prev == 0 && WinSignal == 1) {
     Serial.println("Win");
     emitter.emit(180);
     EmitCount = 0;
     isEmitting = true;
     EmitStamp = millis();
+    led_status = 2;
   }
   if (isEmitting) {
     if (3000 < millis() - EmitStamp) {
       emitter.emit(90);
+      led_status = 0;
       isEmitting = false;
     }
   }
+
+  led.update(led_status);
+  if(16<led.pixel_index)led_status = 0;
+  
   
 //  if (Serial.available() > 0) {
 //    OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", Serial.read());
 //  }
-  if(prize0.update()){
+  if(prize_right.update()){
+    led_status = 1;
     OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", 1);
     Serial.println("000000000000000000000");
   }
-  if(prize1.update()){
+  if(prize_left.update()){
+    led_status = 1;
     OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", 1);
     Serial.println("111111111111111111111");
   }
-  if(prize2.update()){
+  if(prize_center.update()){
+    led_status = 1;
     OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", 1);
     Serial.println("222222222222222222222");
   }
