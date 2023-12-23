@@ -89,17 +89,17 @@ void loop() {
 //    OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", Serial.read());
 //  }
   if(prize_right.update()){
-    led_status = 1;
+    if(led_tatus != 2) led_status = 1;
     OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", 1);
     Serial.println("000000000000000000000");
   }
   if(prize_left.update()){
-    led_status = 1;
+    if(led_tatus != 2) led_status = 1;
     OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", 1);
     Serial.println("111111111111111111111");
   }
   if(prize_center.update()){
-    led_status = 1;
+    if(led_tatus != 2) led_status = 1;
     OscWiFi.send(host.c_str(), 9000, "/toUnity/ikura/credit", 1);
     Serial.println("222222222222222222222");
   }

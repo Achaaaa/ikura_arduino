@@ -16,7 +16,7 @@ int emitNumOld;
 int impactPin = 2;
 int sole_in_pin = 3;
 int sole_out_pin = 4;
-
+int led_pin = 9;
 int handle_pin = 0;
 int impactPower = 0;
 
@@ -25,12 +25,13 @@ void setup() {
   //  inMetro.set(1000);
   //  impactMetro.set(1000);
   //  impactMetro2.set(1100);
-  emitter.set(9);
+  //emitter.set(9);
   pinMode(handle_pin, INPUT);
   pinMode(5, INPUT);
   pinMode(impactPin, OUTPUT);
   pinMode(sole_in_pin, OUTPUT);
   pinMode(sole_out_pin, OUTPUT);
+  pinMode(led_pin, OUTPUT);
   Serial.begin(9600);
   Serial.println("START");
 }
@@ -38,7 +39,7 @@ void setup() {
 void loop() {
   val = analogRead(5) ; //球が射出されてるか確認
   impactPower = map(analogRead(handle_pin), 0, 443, 0, 255); //可変抵抗の値を２５５
-  //Serial.println(val) ;
+  analogWrite(led_pin, 3);
   Serial.print(analogRead(handle_pin)) ;
   Serial.print("\t");
   Serial.print(impactPower) ;
