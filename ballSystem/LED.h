@@ -19,7 +19,7 @@ class LED {
       Pixels.begin();
     }
 
-    boolean update(int _switch) {
+    void update(int _switch) {
       //pixels
       switch_status = _switch;
       pixel_timer++;

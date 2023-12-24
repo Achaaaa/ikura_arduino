@@ -4,15 +4,23 @@ class Prize {
     ~Prize() {}
 
     int prizePin;
+    int prizeThreshold;
     boolean BallIn;
     boolean BallIn_prev;
+    int prizeVal;
 
-    void set(int _prizePin) {
+    void set(int _prizePin, int _prizeThreshold) {
       prizePin = _prizePin;
+      prizeThreshold = _prizeThreshold;
     }
 
-    boolean update() {
-      if (analogRead(prizePin) < 30) {
+    void update() {
+      prizeVal = analogRead(prizePin);
+      Serial.print(prizeVal);
+    }
+
+    boolean observe() {
+      if (prizeVal < prizeThreshold) {
         BallIn = true;
       } else {
         BallIn = false;
